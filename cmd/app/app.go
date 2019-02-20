@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/jinzhu/gorm"
 	"luyongjuan/webbackend/datapush"
+	"luyongjuan/webbackend/handler"
 	"net/http"
 	"os"
 
@@ -26,7 +27,7 @@ func main() {
 
 	dbHost := os.Getenv("POSTGRES_URL")
 	if dbHost == "" {
-		dbHost = "172.17.0.2" //"192.168.140.32"
+		dbHost = "172.17.0.2"
 	}
 
 	username := os.Getenv("POSTGRES_USER")
@@ -58,15 +59,15 @@ func main() {
 
 	//websocket
 	datapush.DataPusherInit()
+	//
+	test := handler.NewTestService()
+
 
 	//http request init
 	mux := http.NewServeMux()
 	//consumer insight
-	mux.Handle("/op/dash/", handler.MakeHandler(_, httpLogger))
-
-
-	_ = httpLogger
-
+	mux.Handle("/tt/", handler.MakeHandler(test, httpLogger))
 	http.Handle("/", mux)
+
 	http.ListenAndServe(":8080", nil)
 }

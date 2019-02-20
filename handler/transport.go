@@ -4,44 +4,45 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"github.com/gorilla/mux"
 	"net/http"
 
 	kitlog "github.com/go-kit/kit/log"
 	kithttp "github.com/go-kit/kit/transport/http"
-	"github.com/gorilla/mux"
 )
 
-var ErrInvalidArgument = errors.New("invalid argument")
+type emptyRequest struct { }
 
 
 // MakeHandler returns a handler for the booking service.
-func MakeHandler(bs Service, logger kitlog.Logger) http.Handler {
+func MakeHandler(conIns Service, logger kitlog.Logger) http.Handler {
 	opts := []kithttp.ServerOption{
 		kithttp.ServerErrorLogger(logger),
 		kithttp.ServerErrorEncoder(encodeError),
 	}
 
-
-	helloHandler := kithttp.NewServer(
-		makeHelloWordEndpoint(bs),
-		decodeListLocationsRequest,
+	spingtesthandler := kithttp.NewServer(
+		makeTestEndpoint(conIns),
+		decodeEmptyRequest,
 		encodeResponse,
 		opts...,
 	)
 
 	r := mux.NewRouter()
 
-	r.Handle("/booking/v1/locations", helloHandler).Methods("GET")
+	r.Handle("/tt/test", spingtesthandler).Methods("POST")
 
 	return r
 }
 
-var errBadRoute = errors.New("bad route")
 
+func decodeEmptyRequest(_ context.Context, r *http.Request) (interface{}, error) {
 
-func decodeListLocationsRequest(_ context.Context, r *http.Request) (interface{}, error) {
-	return "hello", nil
+	return emptyRequest{}, nil
 }
+
+
+var errBadRoute = errors.New("bad route")
 
 func encodeResponse(ctx context.Context, w http.ResponseWriter, response interface{}) error {
 	if e, ok := response.(errorer); ok && e.error() != nil {
@@ -60,8 +61,8 @@ type errorer interface {
 func encodeError(_ context.Context, err error, w http.ResponseWriter) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	switch err {
-	case ErrInvalidArgument:
-		w.WriteHeader(http.StatusBadRequest)
+	// here is error code in this service
+
 	default:
 		w.WriteHeader(http.StatusInternalServerError)
 	}
