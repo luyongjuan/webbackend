@@ -1,0 +1,21 @@
+Logger:
+  # panic 5 fatal 4 error 3 warn 2 info 1 debug 0
+  Level: 0
+  # See https://github.com/natefinch/lumberjack/tree/v2.1
+  Filepath: "logs/traffic-central-screen.log"  # /tianrang/logs/
+  MaxSize: 512 # MB
+  MaxBackups: 30
+  MaxAge: 30 # 天
+  Enable: true
+
+###签名信息
+SnKey:
+   SecretKey: "64bbde47635f39ec077f93a064e5d084"
+   Partner: "tianrang"
+
+###业务数据库
+DB:
+   SourceDB: "qqdz_reader:W3AWD5Tkf8kNB@tcp(172.18.111.199:3306)/fgw_qqzx_prod?charset=utf8&parseTime=True&loc=Local"
+
+###中枢接口地址
+Central:

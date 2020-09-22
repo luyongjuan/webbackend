@@ -1,16 +1,10 @@
 package main
 
 import (
-	"errors"
+	"fmt"
 	"github.com/jinzhu/gorm"
-	"luyongjuan/webbackend/datapush"
-	"luyongjuan/webbackend/handler"
-	"net/http"
-	"os"
-
-	"github.com/go-kit/kit/log"
 	"luyongjuan/webbackend/repository"
-
+	"math/rand"
 )
 
 func initDB(host, user, pw, dbPort string) *gorm.DB {
@@ -25,7 +19,7 @@ func initDB(host, user, pw, dbPort string) *gorm.DB {
 
 func main() {
 
-	dbHost := os.Getenv("POSTGRES_URL")
+	/*dbHost := os.Getenv("POSTGRES_URL")
 	if dbHost == "" {
 		dbHost = "172.17.0.2"
 	}
@@ -69,5 +63,14 @@ func main() {
 	mux.Handle("/tt/", handler.MakeHandler(test, httpLogger))
 	http.Handle("/", mux)
 
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":8080", nil)*/
+
+	var data []int
+	for i := 10; i < 731; i++{
+		data = append(data, rand.Intn(5)+rand.Intn(10))
+	}
+
+	fmt.Println(data)
+
+
 }
